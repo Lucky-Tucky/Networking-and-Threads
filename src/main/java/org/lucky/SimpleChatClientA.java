@@ -1,0 +1,53 @@
+package org.lucky;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.net.InetSocketAddress;
+import java.nio.channels.Channels;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
+
+public class SimpleChatClientA {
+
+    private JTextField outgoing;
+    private PrintWriter printWriter;
+
+    public void go(){
+        setUpNetworking();
+        outgoing = new JTextField(20);
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(e -> sendMessage());
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.add(outgoing);
+        mainPanel.add(sendButton);
+        JFrame frame = new JFrame("Simple Chat Client");
+        frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
+        frame.setSize(400,100);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+    }
+
+    private void setUpNetworking() {
+        InetSocketAddress address = new InetSocketAddress(5000);
+        try(SocketChannel channel = SocketChannel.open(address)){
+
+            Writer writer = Channels.newWriter(channel, StandardCharsets.UTF_8);
+            printWriter = new PrintWriter(writer);
+//            printWriter.println();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sendMessage(){
+        printWriter.println(outgoing.getText());
+        printWriter.flush();
+        outgoing.setText("");
+        outgoing.requestFocus();
+    }
+}
