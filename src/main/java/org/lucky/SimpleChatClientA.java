@@ -34,8 +34,9 @@ public class SimpleChatClientA {
 
     private void setUpNetworking() {
         InetSocketAddress address = new InetSocketAddress(5000);
-        try(SocketChannel channel = SocketChannel.open(address)){
 
+        try{
+            SocketChannel channel = SocketChannel.open(address);
             Writer writer = Channels.newWriter(channel, StandardCharsets.UTF_8);
             printWriter = new PrintWriter(writer);
 //            printWriter.println();
@@ -49,5 +50,9 @@ public class SimpleChatClientA {
         printWriter.flush();
         outgoing.setText("");
         outgoing.requestFocus();
+    }
+
+    public static void main(String[] args){
+        new SimpleChatClientA().go();
     }
 }

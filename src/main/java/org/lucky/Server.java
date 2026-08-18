@@ -1,8 +1,6 @@
 package org.lucky;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.channels.Channels;
 import java.nio.channels.ServerSocketChannel;
@@ -23,9 +21,15 @@ public class Server{
             while(serverSocketChannel.isOpen()){
                 SocketChannel clientChannel = serverSocketChannel.accept();
                 Writer writer = Channels.newWriter(clientChannel, StandardCharsets.UTF_8);
+                Reader reader = Channels.newReader(clientChannel,StandardCharsets.UTF_8);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                String message;
+                while ((message = bufferedReader.readLine()) != null) {
+                    System.out.println("Client: " + message);
+                }
                 PrintWriter printWriter = new PrintWriter(writer);
                 printWriter.println("Never Give Up 💪!!!!");
-
+//                bufferedReader/
                 printWriter.close();
             }
 
